@@ -1,0 +1,5 @@
+/build
+/typescript
+/.clang-tidy
+/clang-tidy-results
+/.vscode

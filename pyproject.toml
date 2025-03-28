@@ -1,0 +1,23 @@
+[build-system]
+requires = [
+  "setuptools>=42",
+  "scikit-build-core>=0.10",
+  "cmake",
+  "make",
+  "pybind11"
+]
+build-backend = "scikit_build_core.build"
+
+[project]
+name = "pysubj"
+version = "0.1.0"
+description = "Subjective Logic Library"
+readme = "README.md"
+authors = [
+  {name = "Stefan Orf", email = "orf@fzi.de"},
+]
+license = "MIT"
+requires-python = ">=3.7"
+
+[tool.scikit-build.cmake.define]
+BUILD_PYTHON_BINDINGS = true

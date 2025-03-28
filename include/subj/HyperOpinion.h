@@ -1,0 +1,88 @@
+// this is for emacs file handling -*- mode: c++; indent-tabs-mode: nil -*-
+
+// -- BEGIN LICENSE BLOCK ----------------------------------------------
+//
+// Copyright 2025 FZI Forschungszentrum Informatik
+//
+// Permission is hereby granted, free of charge, to any person obtaining
+// a copy of this software and associated documentation files (the
+// “Software”), to deal in the Software without restriction, including
+// without limitation the rights to use, copy, modify, merge, publish,
+// distribute, sublicense, and/or sell copies of the Software, and to
+// permit persons to whom the Software is furnished to do so, subject to
+// the following conditions:
+//
+// The above copyright notice and this permission notice shall be
+// included in all copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND,
+// EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+// MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+// IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
+// CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+// TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
+// SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+//
+// -- END LICENSE BLOCK ------------------------------------------------
+
+//----------------------------------------------------------------------
+/*!\file
+ *
+ * \author  Stefan Orf <orf@fzi.de>
+ * \date    2025-01-25
+ *
+ */
+//----------------------------------------------------------------------
+
+#ifndef SUBJ_HYPEROPINION_H_INCLUDED
+#define SUBJ_HYPEROPINION_H_INCLUDED
+
+#include <subj/OpinionOwner.h>
+
+#include <Eigen/Dense>
+
+namespace subj {
+
+class HyperOpinion
+{
+public:
+  using DVector = Eigen::Matrix<double, Eigen::Dynamic, 1>;
+  using RVector = Eigen::Matrix<double, Eigen::Dynamic, 1>;
+
+  HyperOpinion();
+
+  HyperOpinion(const RVector& belief, const double& uncertainty, const DVector& base_rate);
+
+  void update(const RVector& belief, const double& uncertainty, const DVector& base_rate);
+
+  void updateBelief(const RVector& belief);
+
+  RVector belief() const;
+
+  void updateUncertainty(const double& uncertainty);
+
+  double uncertainty() const;
+
+  void updateBaseRate(const DVector& base_rate);
+
+  DVector baseRate() const;
+
+  void updateOwner(const OpinionOwner& owner);
+
+  OpinionOwner owner() const;
+
+private:
+  OpinionOwner m_owner;
+
+  DVector m_base_rate;
+
+  double m_uncertainty;
+
+  RVector m_belief;
+
+  double m_prior_weight;
+};
+
+} // namespace subj
+
+#endif /* SUBJ_HYPEROPINION_H_INCLUDED */
