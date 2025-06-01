@@ -45,7 +45,7 @@ PYBIND11_MODULE(pysubj, m)
          "Update the dirichlet pdf's base rate.")
     .def("evidence", &subj::DirichletPDF::evidence, "Return the dirichlet pdf's evidence.")
     .def("evidenceMat",
-         &subj::DirichletPDF::evidence,
+         &subj::DirichletPDF::evidenceMat,
          "Return the dirichlet pdf's evidence as numpy array.")
     .def("baseRate", &subj::DirichletPDF::baseRate, "Return the dirichlet pdf's base rate.")
     .def("baseRateMat",
@@ -116,7 +116,8 @@ PYBIND11_MODULE(pysubj, m)
       static_cast<bool (subj::MultinomialOpinion::*)(const double&)>(&subj::MultinomialOpinion::u),
       "Update the opinion's uncertainty.")
     .def("uncertainty",
-         static_cast<double (subj::MultinomialOpinion::*)() const>(&subj::MultinomialOpinion::uncertainty),
+         static_cast<double (subj::MultinomialOpinion::*)() const>(
+           &subj::MultinomialOpinion::uncertainty),
          "Return the opinion's uncertainty.")
     .def("u",
          static_cast<double (subj::MultinomialOpinion::*)() const>(&subj::MultinomialOpinion::u),
