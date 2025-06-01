@@ -1,3 +1,5 @@
+![SUBJ icon](/etc/subj_icon.svg)
+
 # SUBJ - Subjective Logic Library
 
 The **SUBJ** library provides types and functions for using subjective logic in your projects. The library is written in C++, and also includes Python bindings. The corresponding Python module is called **pySUBJ**
