@@ -80,6 +80,8 @@ MultinomialOpinion td(const MultinomialOpinion& opinion, const double& discount_
 
 MultinomialOpinion normalMultiplication(const MultinomialOpinion& a, const MultinomialOpinion& b);
 
+MultinomialOpinion deduction(const MultinomialOpinion& opinion, const std::vector<MultinomialOpinion>& conditionalOpinions);
+
 } // namespace subj
 
 #endif /* SUBJ_OPERATORS_H_INCLUDED */

@@ -289,4 +289,74 @@ MultinomialOpinion normalMultiplication(const MultinomialOpinion& opinion1,
   return result;
 }
 
+MultinomialOpinion deduction(const MultinomialOpinion& opinion,
+                             const std::vector<MultinomialOpinion>& conditionalOpinions)
+{
+  size_t size        = conditionalOpinions.size();
+  Eigen::Index y_dim = conditionalOpinions[0].dim();
+  MultinomialOpinion result(y_dim);
+
+  // MBR
+  Eigen::VectorXd a_y     = Eigen::VectorXd::Zero(y_dim);
+  Eigen::VectorXd a_b_sum = Eigen::VectorXd::Zero(y_dim);
+  double a_u_sum          = 0.0;
+
+  for (size_t i = 0; i < size; ++i)
+  {
+    double a_xi = opinion.baseRate()[i];
+    a_b_sum += a_xi * conditionalOpinions[i].beliefMat();
+    a_u_sum += a_xi * conditionalOpinions[i].uncertainty();
+  }
+
+  a_y = a_b_sum / (1.0 - a_u_sum);
+
+  // Sub-Simplex Apex Uncertainty
+  Eigen::VectorXd u_j     = Eigen::VectorXd::Zero(y_dim);
+  Eigen::VectorXd p_yxhat = Eigen::VectorXd::Zero(y_dim);
+  Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic> b_yx(size, y_dim);
+
+  for (size_t i = 0; i < size; ++i)
+  {
+    double a_xi               = opinion.baseRate()[i];
+    MultinomialOpinion condOp = conditionalOpinions[i];
+    condOp.updateBaseRate(a_y);
+    p_yxhat += a_xi * condOp.pMat();
+
+    b_yx.block(i, 0, 1, y_dim) = conditionalOpinions[i].beliefMat().transpose();
+  }
+
+  Eigen::VectorXd b_yx_column_min = b_yx.colwise().minCoeff();
+  for (size_t j = 0; j < static_cast<size_t>(y_dim); ++j)
+  {
+    u_j[j] = (p_yxhat[j] - b_yx_column_min[j]) / a_y[j];
+  }
+
+  double u_yxhat = u_j.minCoeff();
+
+  double u_yxibxi_sum = 0.0;
+
+  for (size_t i = 0; i < size; ++i)
+  {
+    u_yxibxi_sum += conditionalOpinions[i].uncertainty() * opinion.bMat()[i];
+  }
+
+  double u_yx = opinion.uncertainty() * u_yxhat + u_yxibxi_sum;
+
+  Eigen::VectorXd p_yx = Eigen::VectorXd::Zero(y_dim);
+  Eigen::VectorXd p_x  = opinion.pMat();
+
+  for (size_t i = 0; i < size; ++i)
+  {
+    MultinomialOpinion condOp = conditionalOpinions[i];
+    condOp.updateBaseRate(a_y);
+    p_yx += p_x[i] * condOp.pMat();
+  }
+
+  Eigen::VectorXd b_res = p_yx - a_y * u_yx;
+
+  result.update(b_res, u_yx, a_y);
+
+  return result;
+}
+
 } // namespace subj

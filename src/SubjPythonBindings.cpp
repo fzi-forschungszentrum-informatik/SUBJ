@@ -303,6 +303,9 @@ PYBIND11_MODULE(pysubj, m)
   m.def("normalMultiplication",
         subj::normalMultiplication,
         "Calculates the normal multiplication of two given opinions.");
+  m.def("deduction",
+        subj::deduction,
+        "Calculates the deduction of a given opinion and a list of conditional opinions.");
 
 #ifdef VERSION_INFO
   m.attr("__version__") = STRINGIFY(VERSION_INFO);
