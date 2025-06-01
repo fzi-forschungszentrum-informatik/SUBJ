@@ -38,6 +38,7 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -pedantic")
 add_library(subj
   src/BinomialOpinion.cpp
   src/DirichletPDF.cpp
+  src/Histogram.cpp
   src/HyperOpinion.cpp
   src/MultinomialOpinion.cpp
   src/Operators.cpp

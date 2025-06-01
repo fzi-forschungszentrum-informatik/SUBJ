@@ -7,6 +7,7 @@
 #include <pybind11/stl.h>
 #include <sstream>
 #include <subj/BinomialOpinion.h>
+#include <subj/Histogram.h>
 #include <subj/MultinomialOpinion.h>
 #include <subj/Operators.h>
 
@@ -221,6 +222,39 @@ PYBIND11_MODULE(pysubj, m)
       stream << "<BinomialOpinion: " << op << ">";
       return stream.str();
     });
+
+  py::class_<subj::Histogram>(m, "Histogram")
+    .def(py::init(), "Create a Histogram.")
+    //     .def(py::init<size_t>(), "Create a histogram with given number of equally sized bins.")
+    .def(py::init<size_t, double, double>(),
+         "Create a histogram with given number of equally sized bins between given minimum and "
+         "maximum value.")
+    .def(py::init<size_t, const Eigen::VectorXd&>(),
+         "Create a histogram with given number of equally sized bins between minimum and "
+         "maximum value of given data and fill histogram with this data.")
+    .def(py::init<size_t, const Eigen::VectorXd&, double, double>(),
+         "Create a histogram with given number of equally sized bins between given minimum and "
+         "maximum value and fill histogram with given data.")
+    .def("insert",
+         static_cast<void (subj::Histogram::*)(double)>(&subj::Histogram::insert),
+         "Insert the given value into the histogram.")
+    .def("insertIntoBin",
+         &subj::Histogram::insertIntoBin,
+         "Insert into a given bin (e.g. increase the amount of values in the given bin by 1).")
+    .def("insert",
+         static_cast<void (subj::Histogram::*)(const Eigen::VectorXd&)>(&subj::Histogram::insert),
+         "Insert the given data into the histogram.")
+    .def("histogram", &subj::Histogram::histogram, "Return the histogram as numpy array.")
+    .def("intervals", &subj::Histogram::intervals, "Return the intervals of the histogram.")
+    .def("normalizedHistogram",
+         &subj::Histogram::normalizedHistogram,
+         "Return the histogram in normalized form (i.e. all values sum to 1). If no data is in the "
+         "histogram, return an all-zero histogram.")
+    .def("dataSize", &subj::Histogram::dataSize, "Return the amount of data in the histogram.")
+    .def(
+      "binIndex",
+      &subj::Histogram::binIndex,
+      "Returns the index of the given value for this histogram, without altering the histogram.");
 
   m.def("projectedDistance",
         subj::projectedDistance,
