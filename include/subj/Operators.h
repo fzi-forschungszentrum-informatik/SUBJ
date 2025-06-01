@@ -78,6 +78,8 @@ MultinomialOpinion trustDiscounting(const MultinomialOpinion& opinion,
 
 MultinomialOpinion td(const MultinomialOpinion& opinion, const double& discount_probability);
 
+MultinomialOpinion normalMultiplication(const MultinomialOpinion& a, const MultinomialOpinion& b);
+
 } // namespace subj
 
 #endif /* SUBJ_OPERATORS_H_INCLUDED */

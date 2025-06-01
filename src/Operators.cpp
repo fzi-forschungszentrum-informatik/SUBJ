@@ -246,4 +246,47 @@ MultinomialOpinion td(const MultinomialOpinion& opinion, const double& discount_
   return trustDiscounting(opinion, discount_probability);
 }
 
+MultinomialOpinion normalMultiplication(const MultinomialOpinion& opinion1,
+                                        const MultinomialOpinion& opinion2)
+{
+  MultinomialOpinion result(opinion1.dim() * opinion2.dim());
+
+  Eigen::Matrix<double, Eigen::Dynamic, 1> b_1 = opinion1.beliefMat();
+  Eigen::Matrix<double, Eigen::Dynamic, 1> b_2 = opinion2.beliefMat();
+  double u_1                                   = opinion1.uncertainty();
+  double u_2                                   = opinion2.uncertainty();
+  Eigen::Matrix<double, Eigen::Dynamic, 1> a_1 = opinion1.baseRateMat();
+  Eigen::Matrix<double, Eigen::Dynamic, 1> a_2 = opinion2.baseRateMat();
+
+  Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic> b_single = b_1 * b_2.transpose();
+  // Eigen::Matrix<double, Eigen::Dynamic, 1> b_rows                = b_1 * u_2;
+  // Eigen::Matrix<double, Eigen::Dynamic, 1> b_cols                = u_1 * b_2;
+  // double u_rows                                                  = b_rows.sum();
+  // double u_cols                                                  = b_cols.sum();
+  // double u_dom                                                   = u_1 * u_2;
+  Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic> a = a_1 * a_2.transpose();
+
+  Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic> p_prod;
+  p_prod = (b_1 + a_1 * u_1) * (b_2 + a_2 * u_2).transpose();
+
+  Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic> u_all;
+  //u_all    = (p_prod - b_single).array() / a.array();
+  u_all    = (u_all.array().isNaN()).select(std::numeric_limits<double>::max(), u_all);
+  double u = u_all.minCoeff();
+
+  Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic> b;
+  b = p_prod - a * u;
+
+  b.transposeInPlace();
+  Eigen::Matrix<double, Eigen::Dynamic, 1> b_res(
+    Eigen::Map<Eigen::Matrix<double, Eigen::Dynamic, 1> >(b.data(), b.cols() * b.rows()));
+  a.transposeInPlace();
+  Eigen::Matrix<double, Eigen::Dynamic, 1> a_res(
+    Eigen::Map<Eigen::Matrix<double, Eigen::Dynamic, 1> >(a.data(), a.cols() * a.rows()));
+
+  result.update(b_res, u, a_res);
+
+  return result;
+}
+
 } // namespace subj

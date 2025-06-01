@@ -300,6 +300,9 @@ PYBIND11_MODULE(pysubj, m)
   m.def("td",
         subj::td,
         "Calculates the trust discounted opinion of a given opinion and a discount probability.");
+  m.def("normalMultiplication",
+        subj::normalMultiplication,
+        "Calculates the normal multiplication of two given opinions.");
 
 #ifdef VERSION_INFO
   m.attr("__version__") = STRINGIFY(VERSION_INFO);

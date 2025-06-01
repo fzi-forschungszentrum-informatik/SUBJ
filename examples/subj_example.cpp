@@ -124,6 +124,16 @@ int main(int argc, char** argv)
   std::cout << "DOC(mult_op1, mult_op2) = " << subj::doc(mult_op1, mult_op2) << std::endl
             << std::endl;
 
+  // Multiplication of two multinomial opinions is done with:
+  subj::MultinomialOpinion opinion_a = subj::MultinomialOpinion(3);
+  subj::MultinomialOpinion opinion_b = subj::MultinomialOpinion(2);
+  opinion_a.update({0.2, 0.3, 0.2}, 0.2, {0.33, 0.34, 0.33});
+  opinion_b.update({0.1, 0.5}, 0.4, {0.5, 0.5});
+  subj::MultinomialOpinion opinion_result = subj::normalMultiplication(opinion_a, opinion_b);
+  std::cout << "The normal multiplication of opinion " << opinion_a << " and opinion " << opinion_b
+            << " is: " << opinion_result << std::endl
+            << std::endl;
+
   std::cout << "There are a lot more operators. See Operators.h for reference." << std::endl;
 
   return 0;
